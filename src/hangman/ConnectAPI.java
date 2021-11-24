@@ -11,6 +11,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+
+/**
+ * ConnectAPI Class
+ * dictID: The ID of the dictionary (a part of the name of the text)
+ * dictionary: The dictionary, implemented in a set to avoid duplicates
+ * responseContext: The response retrieved from the GET Request
+ * urlExists: A boolean in order to know if the GET Request was successful
+ */
 public class ConnectAPI {
 
     public String dictID;
@@ -18,12 +26,21 @@ public class ConnectAPI {
     public String responseContent;
     public boolean urlExists;
 
+    /**
+     * @param _dictID The Id of the dictionary
+     */
     public ConnectAPI(String _dictID) {
         this.dictID = _dictID;
         this.dictionary = null;
         this.responseContent = null;
     }
 
+    /**
+     * Connect method
+     * Makes a GET Request to https://openlibrary.org/works/{DictID}.json
+     * Initializes the urlExists variable to true or false (if successful connection true else false)
+     * Initializes the responseContent to be equal with the response of the GET Request
+     */
     public void connect() {
         HttpURLConnection connection = null;
         BufferedReader reader;
@@ -63,6 +80,12 @@ public class ConnectAPI {
         this.responseContent = responseContent.toString();
     }
 
+    /**
+     * @param responseCont The response of the GET Request that was set at connect method
+     * @return The responseContent 'cleaned up' (Get only the value attribute of the json,
+     *         replace all characters except a-zA-Z with empty string, so as the words that will end
+     *         up in the dictionary will be only letters)
+     */
     public static String getValueAttr(String responseCont) {
         // Convert response to json object
         JSONObject json = new JSONObject(responseCont);
@@ -70,9 +93,15 @@ public class ConnectAPI {
         // get the attribute that has the words
         String valueAttr = json.getJSONObject("description").get("value").toString();
 
-        return valueAttr.replaceAll("[^a-zA-Z0-9 ]", "");
+        return valueAttr.replaceAll("[^a-zA-Z ]", "");
     }
 
+    /**
+     * createDict method
+     * calls getValueAttr and gets the return. Splits on space and add all words(strings) in a
+     * string Array. Then looping in the string Array created and add to the dictionary(set) all
+     * words that are >= 6 letters.
+     */
     public void createDict() {
         // create the dictionary (implemented as a set - no duplicates)
         Set<String> dict = new HashSet<>();
@@ -87,9 +116,17 @@ public class ConnectAPI {
             }
         }
 
+        // set the dictionary attribute of the object as the dictionary created
         this.dictionary = dict;
     }
 
+    /**
+     * @throws InvalidCountException A word exists more than once in the dictionary
+     * @throws UndersizeException The dictionary must have at least 20 words
+     * @throws InvalidRangeException All words in the dictionary must have length >= 6
+     * @throws UnbalancedException At least 20% of the words in the dictionary must have length >= 9 letters
+     * @throws IOException This occurs when something goes wrong with opening the file to write all words of the dictionary inside
+     */
     public void checkDictValidity() throws InvalidCountException, UndersizeException, InvalidRangeException, UnbalancedException, IOException {
         // check for invalidRangeException even though this dictionary will only contain words
         // with size >= 6, so basically this exception will never be used
@@ -138,9 +175,6 @@ public class ConnectAPI {
                 if (++i == this.dictionary.size()) writer.write(word);
                 else writer.write(word + "\n");
             }
-        }
-        catch (IOException e) {
-            throw(e);
         }
     }
 

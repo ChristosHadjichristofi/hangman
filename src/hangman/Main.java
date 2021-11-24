@@ -57,14 +57,54 @@ public class Main extends Application implements Initializable {
     @FXML
     private ScrollPane scrollableContainer;
 
+    /**
+     * setActiveDictWordsLbl method that sets the content of the label
+     * @param activeWords The active words that will appear in the ui
+     */
     private void setActiveDictWordsLbl(int activeWords) { this.activeDictWordsLbl.setText("# of words in Dictionary: " + activeWords); }
+
+    /**
+     * setScoreLbl method that sets the content of the label
+     * @param score The score that will appear in the ui
+     */
     private void setScoreLbl(double score) { this.scoreLbl.setText("Score: " + String.format("%.2f", score)); }
+
+    /**
+     * setSuccessRateLbl method that sets the content of the label
+     * @param successRate The success rate that will appear in the ui
+     */
     private void setSuccessRateLbl(double successRate) { this.successRateLbl.setText("Success Rate: " + String.format("%.2f", successRate)); }
+
+    /**
+     * setSuccessRateLbl method that sets the content of the label
+     * @param src Which image will be loaded
+     */
     private void setImgContainer(String src) { this.imgContainer.setImage(new Image(new File(src).toURI().toString())); }
+
+    /**
+     * setMessagePosLbl method that sets the content of the label
+     * @param m The message that will appear
+     */
     private void setMessagePosLbl(String m) { this.messagePosLbl.setText(m); }
+
+    /**
+     * setMessageLbl method that sets the content of the label
+     * @param m The message that will appear
+     */
     private void setMessageLbl(String m) { this.messageLbl.setText(m); }
+
+    /**
+     * setDictLbl method that sets the content of the label
+     * @param m The message that will appear
+     */
     private  void setDictLbl(String m) { this.dictLbl.setText(m); }
 
+
+    /**
+     * Letter Class
+     * Extends TextField
+     * pos Holds the position of the letter
+     */
     public static class Letter extends TextField {
         public int pos;
 
@@ -77,10 +117,22 @@ public class Main extends Application implements Initializable {
         }
     }
 
+    /**
+     * ProbabilityButton Class
+     * Extends Button
+     * pos Holds the position of the Letter that this probability button belongs
+     * letter Holds the letter that this probability button belongs
+     */
     public static class ProbabilityButton extends Button {
         public int pos;
         public Character letter;
 
+        /**
+         * ProbabilityButton constructor
+         * @param s The string that will be set as text
+         * @param pos The position of the letter that this probability button belongs
+         * @param letter The letter that this probability button belongs
+         */
         public ProbabilityButton(String s, int pos, Character letter) {
             super();
             this.pos = pos;
@@ -89,7 +141,12 @@ public class Main extends Application implements Initializable {
             this.setId("probabilityButton");
         }
     }
-
+    /**
+     * method to throw alert when error occurs
+     * @param exceptionID id of exception
+     * @param errMessage message to be thrown
+     * @throws IOException Exception occurs when trying to open the txt that has the dictionary inside
+     */
     public void throwAlert(String exceptionID, String errMessage) throws IOException {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(exceptionID + "Error!");
@@ -100,6 +157,10 @@ public class Main extends Application implements Initializable {
         initialize();
     }
 
+    /**
+     * method to (re)start game
+     * @throws IOException Exception occurs when trying to open the txt that has the dictionary inside
+     */
     public void startAction() throws IOException {
         if (dictID == null) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -112,6 +173,10 @@ public class Main extends Application implements Initializable {
         else initialize();
     }
 
+    /**
+     * method to create a new txt with a new dictionary retrieved from the GET Request
+     * @throws IOException Exception occurs for a number of reasons (because creating a dictionary means validation)
+     */
     public void createAction() throws IOException {
         TextInputDialog lDialog = new TextInputDialog("Dictionary_ID");
         lDialog.setHeaderText("Enter your the Dictionary_ID you want to create:");
@@ -120,6 +185,10 @@ public class Main extends Application implements Initializable {
         createDictAction();
     }
 
+    /**
+     * method that loads the specified txt (by giving the dictionary_id) as the current dictionary
+     * @throws IOException Exception occurs when trying to open the txt that has the dictionary inside
+     */
     public void loadAction() throws IOException {
         TextInputDialog lDialog = new TextInputDialog("Dictionary_ID");
         lDialog.setHeaderText("Enter your the Dictionary_ID you want to load:");
@@ -141,8 +210,15 @@ public class Main extends Application implements Initializable {
         }
     }
 
+    /**
+     * method to exit the app
+     */
     public void exitAction() { Platform.exit(); }
 
+    /**
+     * method to show the solution and update all elements accordingly
+     * @throws IOException Exception occurs when trying to open the pastRounds.txt to update it
+     */
     public void showSolutionAction() throws IOException {
         showHiddenWord();
 
@@ -157,6 +233,10 @@ public class Main extends Application implements Initializable {
         scrollableContainer.setContent(new Pane());
     }
 
+    /**
+     * method that shows the past rounds
+     * @throws IOException Exception occurs when trying to open the pastRounds.txt to update it
+     */
     public void showPastRoundsAction() throws IOException {
         StringBuilder pastRounds = new StringBuilder();
 
@@ -177,6 +257,9 @@ public class Main extends Application implements Initializable {
         alert.showAndWait();
     }
 
+    /**
+     * method that shows the dictionary details
+     */
     public void dictDetailsAction() {
         StringBuilder dictDetails = new StringBuilder();
 
@@ -196,6 +279,10 @@ public class Main extends Application implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {}
 
+    /**
+     * method which is triggered when clicking the Load button
+     * @throws IOException Exception occurs when trying to open the txt that has the dictionary inside
+     */
     public void loadDictAction() throws IOException {
         dictID = inputDictTf.getText();
         if (new File("medialab/hangman_" + dictID + ".txt").isFile()) {
@@ -216,6 +303,11 @@ public class Main extends Application implements Initializable {
         }
     }
 
+    /**
+     * method which is triggered when clicking the create button
+     * tries to create a new txt file with the words retrieved from the GET Request
+     * @throws IOException Exception occurs when trying to open the txt that has the dictionary inside
+     */
     public void createDictAction() throws IOException {
         ConnectAPI connectAPI = new ConnectAPI(dictID);
 
@@ -253,6 +345,11 @@ public class Main extends Application implements Initializable {
 
     }
 
+    /**
+     * initialize method that takes care of the initialization of every component of the interface and the objects
+     * that take care of the game logic
+     * @throws IOException Exception occurs when trying to load the data of the txt that has the dictionary inside
+     */
     public void initialize() throws IOException {
         setDictLbl("DictionaryID:" + dictID);
         setMessageLbl("");
@@ -272,6 +369,9 @@ public class Main extends Application implements Initializable {
         updateHangmanImage();
     }
 
+    /**
+     * method to update the images of the hangman
+     */
     private void updateHangmanImage() {
         if (this.game.player.tries == 0) setImgContainer("assets/img/hangman6.png");
         else if (this.game.player.tries == 1) setImgContainer("assets/img/hangman5.png");
@@ -282,6 +382,9 @@ public class Main extends Application implements Initializable {
         else setImgContainer("assets/img/hangman0.png");
     }
 
+    /**
+     * method to update the stats of the game (wordsInDict, points, successRate)
+     */
     private void updateStats() {
         // active dictionary words
         setActiveDictWordsLbl(this.game.roundInfo.wordsInDict);
@@ -291,6 +394,9 @@ public class Main extends Application implements Initializable {
         setSuccessRateLbl(this.game.player.successRate);
     }
 
+    /**
+     * method that updates the container with the word inside
+     */
     private void updateWordContainer() {
         for (int i = 0; i < this.game.roundInfo.hiddenWord.size(); i++) {
             Letter letter = new Letter(this.game.roundInfo.playerGuess[i].toString(), i);
@@ -299,6 +405,9 @@ public class Main extends Application implements Initializable {
         }
     }
 
+    /**
+     * method that shows the hidden word in the word container
+     */
     private void showHiddenWord() {
         for (int i = 0; i < this.game.roundInfo.hiddenWord.size(); i++) {
             Letter letter = new Letter(this.game.roundInfo.hiddenWord.get(i).toString(), i);
@@ -306,6 +415,10 @@ public class Main extends Application implements Initializable {
         }
     }
 
+    /**
+     * Event handler that is triggered when clicking a letter in the word container
+     * @param e The event object
+     */
     private void showLetterProbabilities(MouseEvent e) {
         Letter letter = (Letter) e.getSource();
         setMessagePosLbl("Choosing Letter for position " + (letter.pos + 1) + ".");
@@ -314,6 +427,7 @@ public class Main extends Application implements Initializable {
         gridPane.setHgap(5);
         gridPane.setVgap(5);
 
+        // creating all the probability buttons of the clicked letter
         Map<Character, Double> m = this.game.roundInfo.candidateLettersProbs.get(letter.pos);
         int i = 0;
         for (Character key : m.keySet()) {
@@ -324,9 +438,13 @@ public class Main extends Application implements Initializable {
         }
 
         scrollableContainer.setContent(gridPane);
-
     }
 
+    /**
+     * Event handler that is triggered when clicking a probability button
+     * This click is basically how the user interracts with the game
+     * @param e The event object
+     */
     private void inputSelected(MouseEvent e) {
         if (game.gameEnded == 0) {
             ProbabilityButton button = (ProbabilityButton) e.getSource();
@@ -362,6 +480,12 @@ public class Main extends Application implements Initializable {
         }
     }
 
+    /**
+     * method that focuses on a specific letter (makes a click on a specific letter so as
+     * the probability buttons refresh)
+     * @param position The position of the letter
+     * @param foundLetter True if the player found a letter on the specific position, false if not
+     */
     private void setFocusOnLetter(int position, boolean foundLetter) {
         if (foundLetter && (position + 1) <= game.roundInfo.hiddenWord.size()) {
             wordContainer.getChildren().get(position + 1).fireEvent(new MouseEvent(MouseEvent.MOUSE_CLICKED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, true, true, true, true, true, true, true, true, true, true, null));
@@ -381,6 +505,9 @@ public class Main extends Application implements Initializable {
 
     public static void main(String[] args) { launch(args); }
 
+    /**
+     * @param primaryStage primaryStage
+     */
     @Override
     public void start(Stage primaryStage) {
         Parent root = null;
