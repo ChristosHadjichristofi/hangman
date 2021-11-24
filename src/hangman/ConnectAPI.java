@@ -16,6 +16,7 @@ public class ConnectAPI {
     public String dictID;
     public Set<String> dictionary;
     public String responseContent;
+    public boolean urlExists;
 
     public ConnectAPI(String _dictID) {
         this.dictID = _dictID;
@@ -40,8 +41,10 @@ public class ConnectAPI {
             int status = connection.getResponseCode();
 
             if (status > 299) {
+                urlExists = false;
                 reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
             } else {
+                urlExists = true;
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             }
             while ((line = reader.readLine()) != null) {
@@ -70,7 +73,7 @@ public class ConnectAPI {
         return valueAttr.replaceAll("[^a-zA-Z0-9 ]", "");
     }
 
-    public Set<String> createDict() {
+    public void createDict() {
         // create the dictionary (implemented as a set - no duplicates)
         Set<String> dict = new HashSet<>();
 
@@ -85,7 +88,6 @@ public class ConnectAPI {
         }
 
         this.dictionary = dict;
-        return dict;
     }
 
     public void checkDictValidity() throws InvalidCountException, UndersizeException, InvalidRangeException, UnbalancedException, IOException {

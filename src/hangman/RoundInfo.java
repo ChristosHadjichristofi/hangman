@@ -43,11 +43,6 @@ public class RoundInfo {
         // get the element at random number index
         String randomWord = dictArr[randNum];
 
-        // remove the randomWord from the dictionary (dictionary variable will be used for the)
-        // candidateLetters variable. It needs to be up to date with the words that are left
-        this.activeDict.remove(randomWord);
-        this.wordsInDict = this.activeDict.size();
-
         // initialize playerGuess array
         this.playerGuess = new Character[randomWord.length()];
         Arrays.fill(playerGuess, '?');
@@ -76,12 +71,10 @@ public class RoundInfo {
     }
 
     public void createCandidateLettersFreqs() {
+        this.candidateLettersFreqs.clear();
         // append to an array list X HashMaps, where X is the length of the size of the hidden word
         for (int i = 0; i < this.hiddenWord.size(); i++) {
             this.candidateLettersFreqs.add(new HashMap<>());
-            for (char ch = 'A'; ch <= 'Z'; ++ch) {
-                this.candidateLettersFreqs.get(i).put(ch, 0);
-            }
         }
 
         // for every word in the activeDictionary
@@ -95,14 +88,13 @@ public class RoundInfo {
     }
 
     public void createCandidateLettersProbs() {
+        this.candidateLettersProbs.clear();
         // loop for all positions of the hiddenWord - because the ArrayList must consist of
         // hiddenWord.size() positions - each position has the probabilities that each letter might show up
         // in that particular position in the active dictionary
         for (int i = 0; i < this.hiddenWord.size(); i++) {
             HashMap<Character, Double> hm = new LinkedHashMap<>();
             HashMap<Character, Double> m = new HashMap<>();
-
-            for (char ch = 'A'; ch <= 'Z'; ++ch) m.put(ch, 0.0);
 
             for (Character letter : this.candidateLettersFreqs.get(i).keySet()) {
                 Double v = ((double) candidateLettersFreqs.get(i).get(letter)) / ((double) this.wordsInDict) * 100;
@@ -123,6 +115,24 @@ public class RoundInfo {
         }
     }
 
+    public ArrayList<Triplet<String, Integer, String>> getPrevRoundDetails() throws  IOException {
+        ArrayList<Triplet<String, Integer, String>> rounds = new ArrayList<>();
+        String fileName = "medialab/rounds/pastRounds.txt";
+        String line = null;
+
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName))) {
+            int i = 0;
+            // get the first 5 lines (if they exist)
+            while (((line = bufferedReader.readLine()) != null) && i < 5) {
+                String[] splitLine = line.split("-");
+                rounds.add(new Triplet<>(splitLine[0], Integer.parseInt(splitLine[1]), splitLine[2]));
+                i++;
+            }
+            return rounds;
+        } catch (IOException e) {
+            throw(e);
+        }
+    }
     public void updatePrevRoundsDetails() throws IOException {
         String fileName = "medialab/rounds/pastRounds.txt";
         String line = null;

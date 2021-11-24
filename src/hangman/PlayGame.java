@@ -1,12 +1,13 @@
 package hangman;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Scanner;
+import java.util.HashSet;
 import java.util.Set;
 
 public class PlayGame {
-    public ConnectAPI connectAPI;
     public RoundInfo roundInfo;
     public Player player;
     // gameEnded = 0 -> game not ended
@@ -15,26 +16,14 @@ public class PlayGame {
     public int gameEnded;
 
     public PlayGame(String dictID) {
-        this.connectAPI = new ConnectAPI(dictID);
         this.roundInfo = new RoundInfo(dictID);
         this.player = new Player();
         this.gameEnded = 0;
     }
 
-    public void initGame() {
-        // Connect to the API and get the response
-        this.connectAPI.connect();
-
-        // Create the dictionary and store it to ConnectAPI object as an attribute
-        Set<String> dictionary = this.connectAPI.createDict();
-
-        // Check if the dictionary passes all tests before creating the txt
-        try {
-            this.connectAPI.checkDictValidity();
-        } catch (InvalidRangeException | UnbalancedException | UndersizeException | InvalidCountException | IOException e) {
-            System.out.println(e.getMessage());
-        }
-
+    public void initGame() throws IOException {
+        // load the Scenario based on dictID
+        Set<String> dictionary = loadScenario();
         // add how many words exist in the current dictionary
         this.roundInfo.wordsInDict = dictionary.size();
         // add the current dictionary in roundInfo object
@@ -51,12 +40,20 @@ public class PlayGame {
         this.roundInfo.createCandidateLettersProbs();
     }
 
-    public void playerMove() {
-        Scanner sc = new Scanner(System.in);
-        // User Input TODO: Player will give input through the ui, will need check if its alpha
-        Integer position = sc.nextInt();
-        Character letter = sc.next().charAt(0);
-        // save User input as currentGuess
+    private Set<String> loadScenario() throws IOException {
+        String fileName = "medialab/hangman_" + this.roundInfo.activeDictID + ".txt";
+        String line = null;
+        Set<String> s = new HashSet<>();
+
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName))) {
+            while ((line = bufferedReader.readLine()) != null) s.add(line);
+        } catch (IOException e) {
+            throw(e);
+        }
+        return s;
+    }
+
+    public void playerMove(int position, Character letter) {
         this.player.currentGuess = new Pair<>(position, letter);
         // update total guesses
         this.player.updateTotalGuesses();
@@ -108,21 +105,16 @@ public class PlayGame {
         else if (!Arrays.toString(this.roundInfo.playerGuess).contains("?")) this.gameEnded = 2;
     }
 
-    public void endGame() throws IOException {
+    public void constructRoundDetails() throws IOException {
         // recreate the hiddenWord as a string (now is an ArrayList<Character>)
         StringBuilder hidden = new StringBuilder(this.roundInfo.hiddenWord.size());
         for (Character c : this.roundInfo.hiddenWord) hidden.append(c);
 
         // player reach max tries
-        if (this.gameEnded == 1) {
-            this.roundInfo.pastRounds.add(new Triplet<>(hidden.toString(), this.player.tries, "Computer"));
-            // show hidden word and announce score
-        }
+        if (this.gameEnded == 1) this.roundInfo.pastRounds.add(new Triplet<>(hidden.toString(), this.player.tries, "Computer"));
         // player found the word
-        else {
-            this.roundInfo.pastRounds.add(new Triplet<>(hidden.toString(), this.player.tries, "Player"));
-            // announce score
-        }
+        else this.roundInfo.pastRounds.add(new Triplet<>(hidden.toString(), this.player.tries, "Player"));
+
         this.roundInfo.updatePrevRoundsDetails();
     }
 }

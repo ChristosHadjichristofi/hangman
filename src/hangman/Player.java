@@ -11,7 +11,7 @@ public class Player {
     public Player() {
         this.totalGuesses = 0;
         this.correctGuesses = 0;
-        this.successRate = 100.00;
+        this.successRate = 0.00;
         this.points = 0;
         this.tries = 6;
     }

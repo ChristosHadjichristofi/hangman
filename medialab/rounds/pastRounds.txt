@@ -1,5 +1,5 @@
-LIFETIME-0-Computer
-MASTERPIECE-0-Computer
-TERROR-0-Computer
-DELIGHT-0-Computer
-TROUBLE-0-Computer
+THRONES-2-Player
+BREWING-1-Player
+DECADES-4-Player
+SUMMERTIME-5-Player
+SWEEPING-5-Player
