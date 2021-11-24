@@ -1,5 +1,5 @@
-THRONES-2-Player
-BREWING-1-Player
-DECADES-4-Player
-SUMMERTIME-5-Player
-SWEEPING-5-Player
+WINTERS-4-Player
+THRONESBACK-5-Player
+THRONES-0-Computer
+GENUINE-0-Computer
+BETRAYAL-0-Computer

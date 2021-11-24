@@ -1,3 +1,9 @@
+.root {
+    -fx-background-image: url("https://image.freepik.com/free-photo/white-grungy-wall-textured-background_53876-103916.jpg");
+    -fx-background-size: contain, contain, contain, contain, contain, contain;
+    -fx-background-position: bottom, bottom, bottom, bottom, bottom, bottom;
+}
+
 #letter {
     -fx-background-color:
             #090a0c,
@@ -14,6 +20,22 @@
     -fx-pref-height: 40;
 }
 
+#inputDictTf, #createDictTf {
+    -fx-background-color:
+            #090a0c,
+            linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),
+            linear-gradient(#20262b, #191d22),
+            radial-gradient(center 50% 0%, radius 100%,
+            rgba(114,131,148,0.9), rgba(255,255,255,0));
+    -fx-background-radius: 5,4,3,5;
+    -fx-background-insets: 0,1,2,0;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+    -fx-text-fill: linear-gradient(white, #d0d0d0);
+    -fx-alignment: center;
+    -fx-pref-width: 160;
+    -fx-pref-height: 25;
+}
+
 #probabilityButton {
     -fx-background-color:
             #090a0c,
@@ -24,4 +46,16 @@
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
     -fx-text-fill: linear-gradient(white, #d0d0d0);
     -fx-pref-width: 80;
+}
+
+#createBtn, #loadBtn {
+    -fx-background-color:
+            #090a0c,
+            linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),
+            linear-gradient(#20262b, #191d22),
+            radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));
+    -fx-background-radius: 5,4,3,5; -fx-background-insets: 0,1,2,0;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+    -fx-text-fill: linear-gradient(white, #d0d0d0);
+    -fx-pref-width: 85;
 }

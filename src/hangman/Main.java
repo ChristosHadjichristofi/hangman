@@ -162,7 +162,7 @@ public class Main extends Application implements Initializable {
      * @throws IOException Exception occurs when trying to open the txt that has the dictionary inside
      */
     public void startAction() throws IOException {
-        if (dictID == null) {
+        if (dictID == null || new File("medialab/hangman_" + dictID + ".txt").isFile()) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Start Error");
             alert.setHeaderText(null);
@@ -351,7 +351,7 @@ public class Main extends Application implements Initializable {
      * @throws IOException Exception occurs when trying to load the data of the txt that has the dictionary inside
      */
     public void initialize() throws IOException {
-        setDictLbl("DictionaryID:" + dictID);
+        setDictLbl("DictionaryID: " + dictID);
         setMessageLbl("");
 
         game = new PlayGame(dictID);
