@@ -13,5 +13,9 @@ The project was to implement a variant of the Hangman game. The goal was to writ
 * In case of a wrong guess the player loses 15 points. The points can not go less than 0.
 * The game ends when the player either finds the hidden word, or runs out of tries. The tries are represented with a classic hangman image.
 
+## Required Jars
+* [JSON Java](https://github.com/stleary/JSON-java)
+* [Java FX 11](https://openjfx.io/openjfx-docs/)
+
 ## GUI
 Images will be uploaded
