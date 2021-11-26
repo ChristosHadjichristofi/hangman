@@ -23,6 +23,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -601,7 +602,9 @@ public class Main extends Application implements Initializable {
                 }
             }
             else if (position == game.roundInfo.hiddenWord.size() - 1) {
+                if (!Arrays.toString(game.roundInfo.playerGuess).contains("?")) return;
                 if (game.roundInfo.playerGuess[0] == '?') setFocusOnLetter(0, false);
+                if (game.roundInfo.playerGuess[0] != '?') setFocusOnLetter(0, true);
             }
         }
         else {
