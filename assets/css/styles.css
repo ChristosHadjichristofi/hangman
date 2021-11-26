@@ -1,5 +1,5 @@
 .root {
-    -fx-background-image: url("https://image.freepik.com/free-photo/white-grungy-wall-textured-background_53876-103916.jpg");
+    -fx-background-image: url("../img/background.jpg");
     -fx-background-size: contain, contain, contain, contain, contain, contain;
     -fx-background-position: bottom, bottom, bottom, bottom, bottom, bottom;
 }

@@ -222,17 +222,36 @@ public class Main extends Application implements Initializable {
      * @throws IOException Exception occurs when trying to open the pastRounds.txt to update it
      */
     public void showSolutionAction() throws IOException {
-        showHiddenWord();
+        // hidden word is not chosen yet (game not even started - the object is not created)
+        if (game == null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Solution Error");
+            alert.setHeaderText(null);
+            alert.setGraphic(null);
+            alert.setContentText("Game hasn't even started!\nTry not to give up so fast.");
+            alert.showAndWait();
+        }
+        else if (game.gameEnded == 0) {
+            showHiddenWord();
 
-        StringBuilder hidden = new StringBuilder(this.game.roundInfo.hiddenWord.size());
-        for (Character c : this.game.roundInfo.hiddenWord) hidden.append(c);
+            StringBuilder hidden = new StringBuilder(this.game.roundInfo.hiddenWord.size());
+            for (Character c : this.game.roundInfo.hiddenWord) hidden.append(c);
 
-        this.game.roundInfo.pastRounds.add(new Triplet<>(hidden.toString(), this.game.player.tries, "Computer"));
-        this.game.roundInfo.updatePrevRoundsDetails();
+            this.game.roundInfo.pastRounds.add(new Triplet<>(hidden.toString(), this.game.player.tries, "Computer"));
+            this.game.roundInfo.updatePrevRoundsDetails();
 
-        setMessagePosLbl("");
-        setMessageLbl("You gave up. You lost!");
-        scrollableContainer.setContent(new Pane());
+            setMessagePosLbl("");
+            setMessageLbl("You gave up. You lost!");
+            scrollableContainer.setContent(new Pane());
+        }
+        else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Solution Error");
+            alert.setHeaderText(null);
+            alert.setGraphic(null);
+            alert.setContentText("You already found the word.\nRestart the game to play.");
+            alert.showAndWait();
+        }
     }
 
     public void showDictTxtNamesAction() {
@@ -260,11 +279,16 @@ public class Main extends Application implements Initializable {
             int i = 1;
             for (String s : filesAvailable) m.append(i++).append(".").append(" ").append(s).append("\n");
 
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            TextArea textArea = new TextArea(m.toString());
+            textArea.setEditable(false);
+            textArea.setWrapText(true);
+            GridPane gridPane = new GridPane();
+            gridPane.setMaxWidth(Double.MAX_VALUE);
+            gridPane.add(textArea, 0, 0);
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("TextFiles Available");
-            alert.setHeaderText(null);
-            alert.setGraphic(null);
-            alert.setContentText(m.toString());
+            alert.getDialogPane().setContent(gridPane);
             alert.showAndWait();
         }
     }
@@ -297,19 +321,31 @@ public class Main extends Application implements Initializable {
      * method that shows the dictionary details
      */
     public void dictDetailsAction() {
-        StringBuilder dictDetails = new StringBuilder();
-
-        for (Map.Entry<Integer, Integer> entry : this.game.roundInfo.freqLengthInfo.entrySet()) {
-            dictDetails.append("Words with length equal to ")
-                    .append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+        if (game == null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Dictionary Details Error");
+            alert.setHeaderText(null);
+            alert.setGraphic(null);
+            alert.setContentText("Game has not even started.\n" +
+                    "No dictionary is loaded.\n" +
+                    "First load a dictionary to see this info");
+            alert.showAndWait();
         }
+        else {
+            StringBuilder dictDetails = new StringBuilder();
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Dictionary Words Length Frequency");
-        alert.setHeaderText(null);
-        alert.setGraphic(null);
-        alert.setContentText(dictDetails.toString());
-        alert.showAndWait();
+            for (Map.Entry<Integer, Integer> entry : this.game.roundInfo.freqLengthInfo.entrySet()) {
+                dictDetails.append("Words with length equal to ")
+                        .append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+            }
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Dictionary Words Length Frequency");
+            alert.setHeaderText(null);
+            alert.setGraphic(null);
+            alert.setContentText(dictDetails.toString());
+            alert.showAndWait();
+        }
     }
 
     @Override
@@ -472,24 +508,26 @@ public class Main extends Application implements Initializable {
      * @param e The event object
      */
     private void showLetterProbabilities(MouseEvent e) {
-        Letter letter = (Letter) e.getSource();
-        setMessagePosLbl("Choosing Letter for position " + (letter.pos + 1) + ".");
-        GridPane gridPane = new GridPane();
-        gridPane.setPadding(new Insets(8));
-        gridPane.setHgap(5);
-        gridPane.setVgap(5);
+        if (game.gameEnded == 0) {
+            Letter letter = (Letter) e.getSource();
+            setMessagePosLbl("Choosing Letter for position " + (letter.pos + 1) + ".");
+            GridPane gridPane = new GridPane();
+            gridPane.setPadding(new Insets(8));
+            gridPane.setHgap(5);
+            gridPane.setVgap(5);
 
-        // creating all the probability buttons of the clicked letter
-        Map<Character, Double> m = this.game.roundInfo.candidateLettersProbs.get(letter.pos);
-        int i = 0;
-        for (Character key : m.keySet()) {
-            String buttonLabel = key + " : " + String.format("%.2f", m.get(key)) + "%";
-            ProbabilityButton button = new ProbabilityButton(buttonLabel, letter.pos, key);
-            button.setOnMouseClicked(this::inputSelected);
-            gridPane.add(button, 0, i++);
+            // creating all the probability buttons of the clicked letter
+            Map<Character, Double> m = this.game.roundInfo.candidateLettersProbs.get(letter.pos);
+            int i = 0;
+            for (Character key : m.keySet()) {
+                String buttonLabel = key + " : " + String.format("%.2f", m.get(key)) + "%";
+                ProbabilityButton button = new ProbabilityButton(buttonLabel, letter.pos, key);
+                button.setOnMouseClicked(this::inputSelected);
+                gridPane.add(button, 0, i++);
+            }
+
+            scrollableContainer.setContent(gridPane);
         }
-
-        scrollableContainer.setContent(gridPane);
     }
 
     /**
