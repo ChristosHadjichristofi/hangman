@@ -1,5 +1,5 @@
-PARENTS-6-Player
-CHROMOSOMAL-6-Player
-DISORDER-5-Player
-MANHATTAN-6-Player
-SUMMER-6-Player
+INTRIGUE-6-Player
+WASTES-6-Player
+BEYOND-6-Player
+FORCES-6-Player
+BALANCE-6-Player

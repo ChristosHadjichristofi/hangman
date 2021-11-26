@@ -457,7 +457,7 @@ public class Main extends Application implements Initializable {
 
         // initialize the game
         game.initGame();
-
+        System.out.println(game.roundInfo.hiddenWord.toString());
         // update word container interface
         updateWordContainer();
         // focus on the first letter
@@ -497,6 +497,7 @@ public class Main extends Application implements Initializable {
      * method that updates the container with the word inside
      */
     private void updateWordContainer() {
+        wordContainer.getChildren().clear();
         for (int i = 0; i < this.game.roundInfo.hiddenWord.size(); i++) {
             Letter letter = new Letter(this.game.roundInfo.playerGuess[i].toString(), i);
             letter.setOnMouseClicked(this::showLetterProbabilities);
@@ -588,17 +589,19 @@ public class Main extends Application implements Initializable {
      * @param foundLetter True if the player found a letter on the specific position, false if not
      */
     private void setFocusOnLetter(int position, boolean foundLetter) {
-        if (foundLetter && (position + 1) <= game.roundInfo.hiddenWord.size()) {
-            if ((position + 1) < game.roundInfo.hiddenWord.size() && this.game.roundInfo.playerGuess[position + 1] != '?') {
-                setFocusOnLetter(position + 1, true);
-            }
-            else {
-                wordContainer.getChildren().get(position + 1).fireEvent(new MouseEvent(MouseEvent.MOUSE_CLICKED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, true, true, true, true, true, true, true, true, true, true, null));
-                wordContainer.getChildren().get(position + 1).requestFocus();
-                if ((position + 1) == game.roundInfo.hiddenWord.size()) {
-                    setMessagePosLbl("");
+        if (foundLetter) {
+            if (position < game.roundInfo.hiddenWord.size() - 1) {
+                if (game.roundInfo.playerGuess[position + 1] != '?') {
+                    setFocusOnLetter(position + 1, true);
                 }
-                else setMessagePosLbl("Choosing Letter for position " + (position + 2) + ".");
+                else {
+                    wordContainer.getChildren().get(position + 1).fireEvent(new MouseEvent(MouseEvent.MOUSE_CLICKED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, true, true, true, true, true, true, true, true, true, true, null));
+                    wordContainer.getChildren().get(position + 1).requestFocus();
+                    setMessagePosLbl("Choosing Letter for position " + (position + 2) + ".");
+                }
+            }
+            else if (position == game.roundInfo.hiddenWord.size() - 1) {
+                if (game.roundInfo.playerGuess[0] == '?') setFocusOnLetter(0, false);
             }
         }
         else {
