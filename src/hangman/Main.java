@@ -298,23 +298,34 @@ public class Main extends Application implements Initializable {
      * @throws IOException Exception occurs when trying to open the pastRounds.txt to update it
      */
     public void showPastRoundsAction() throws IOException {
-        StringBuilder pastRounds = new StringBuilder();
-
-        ArrayList<Triplet<String, Integer, String>> rounds = this.game.roundInfo.getPrevRoundDetails();
-        for (Triplet<String, Integer, String> entry : rounds) {
-            pastRounds.append("Word: ")
-                    .append(entry.getWord()).append(", Tries left: ")
-                    .append(entry.getTries()).append(", Winner: ").append(entry.getWinner()).append("\n");
+        if (game == null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Past Rounds Error");
+            alert.setHeaderText(null);
+            alert.setGraphic(null);
+            alert.setContentText("To see the past rounds you first need to load a dictionary.\nStart the game to see" +
+                    " the information you want!");
+            alert.showAndWait();
         }
+        else {
+            StringBuilder pastRounds = new StringBuilder();
 
-        if (rounds.size() == 0) pastRounds.append("No past rounds available.");
+            ArrayList<Triplet<String, Integer, String>> rounds = this.game.roundInfo.getPrevRoundDetails();
+            for (Triplet<String, Integer, String> entry : rounds) {
+                pastRounds.append("Word: ")
+                        .append(entry.getWord()).append(", Tries left: ")
+                        .append(entry.getTries()).append(", Winner: ").append(entry.getWinner()).append("\n");
+            }
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Dictionary Words Length Frequency");
-        alert.setHeaderText(null);
-        alert.setGraphic(null);
-        alert.setContentText(pastRounds.toString());
-        alert.showAndWait();
+            if (rounds.size() == 0) pastRounds.append("No past rounds available.");
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Dictionary Words Length Frequency");
+            alert.setHeaderText(null);
+            alert.setGraphic(null);
+            alert.setContentText(pastRounds.toString());
+            alert.showAndWait();
+        }
     }
 
     /**
