@@ -17,6 +17,7 @@
          <MenuItem mnemonicParsing="false" onAction="#dictDetailsAction" text="Dictionary" />
          <MenuItem mnemonicParsing="false" onAction="#showPastRoundsAction" text="Rounds" />
          <MenuItem mnemonicParsing="false" onAction="#showSolutionAction" text="Solution" />
+         <MenuItem mnemonicParsing="false" onAction="#showDictTxtNamesAction" text="Available Dictionaries(txt)" />
       </Menu>
    </MenuBar>
    <BorderPane prefHeight="578.0" prefWidth="600.0">

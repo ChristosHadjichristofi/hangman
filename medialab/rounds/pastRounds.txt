@@ -1,5 +1,5 @@
-WINTERS-4-Player
-THRONESBACK-5-Player
-THRONES-0-Computer
-GENUINE-0-Computer
-BETRAYAL-0-Computer
+PARENTS-5-Player
+DOCTOR-6-Player
+TUMULTUOUS-6-Player
+INVESTIGATES-6-Player
+DIVORCED-4-Player

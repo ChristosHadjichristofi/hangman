@@ -93,7 +93,7 @@ public class ConnectAPI {
         // get the attribute that has the words
         String valueAttr = json.getJSONObject("description").get("value").toString();
 
-        return valueAttr.replaceAll("[^a-zA-Z ]", "");
+        return valueAttr.replaceAll("[\\n\\r\\t]+", " ").replaceAll("[^a-zA-Z]", " ");
     }
 
     /**

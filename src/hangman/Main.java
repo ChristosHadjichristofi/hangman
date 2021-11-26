@@ -19,6 +19,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -162,7 +163,7 @@ public class Main extends Application implements Initializable {
      * @throws IOException Exception occurs when trying to open the txt that has the dictionary inside
      */
     public void startAction() throws IOException {
-        if (dictID == null || new File("medialab/hangman_" + dictID + ".txt").isFile()) {
+        if (dictID == null || !(new File("medialab/hangman_" + dictID + ".txt").isFile())) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Start Error");
             alert.setHeaderText(null);
@@ -182,7 +183,8 @@ public class Main extends Application implements Initializable {
         lDialog.setHeaderText("Enter your the Dictionary_ID you want to create:");
         lDialog.showAndWait();
         dictID = lDialog.getEditor().getText();
-        createDictAction();
+
+        createDictAux();
     }
 
     /**
@@ -205,7 +207,7 @@ public class Main extends Application implements Initializable {
             alert.setTitle("Dictionary 404");
             alert.setHeaderText(null);
             alert.setGraphic(null);
-            alert.setContentText("This Dictionary does not exist.\n Try an other dictionary, or create a new one.");
+            alert.setContentText("This Dictionary does not exist.\nTry an other dictionary, or create a new one.");
             alert.showAndWait();
         }
     }
@@ -231,6 +233,40 @@ public class Main extends Application implements Initializable {
         setMessagePosLbl("");
         setMessageLbl("You gave up. You lost!");
         scrollableContainer.setContent(new Pane());
+    }
+
+    public void showDictTxtNamesAction() {
+        File f = new File("medialab");
+        ArrayList<String> filesAvailable = new ArrayList<>();
+
+        FilenameFilter textFilter = (dir, name) -> name.toLowerCase().endsWith(".txt");
+
+        File[] files = f.listFiles(textFilter);
+        assert files != null;
+        for (File file : files) {
+            if (!file.isDirectory()) filesAvailable.add(file.getName().split("_")[1].split("\\.")[0]);
+        }
+
+        if (filesAvailable.size() == 0) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("No TextFiles found");
+            alert.setHeaderText(null);
+            alert.setGraphic(null);
+            alert.setContentText("No available txt files\nFirst load something.");
+            alert.showAndWait();
+        }
+        else {
+            StringBuilder m = new StringBuilder();
+            int i = 1;
+            for (String s : filesAvailable) m.append(i++).append(".").append(" ").append(s).append("\n");
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("TextFiles Available");
+            alert.setHeaderText(null);
+            alert.setGraphic(null);
+            alert.setContentText(m.toString());
+            alert.showAndWait();
+        }
     }
 
     /**
@@ -298,7 +334,7 @@ public class Main extends Application implements Initializable {
             alert.setTitle("Dictionary 404");
             alert.setHeaderText(null);
             alert.setGraphic(null);
-            alert.setContentText("This Dictionary does not exist.\n Try an other dictionary, or create a new one.");
+            alert.setContentText("This Dictionary does not exist.\nTry an other dictionary, or create a new one.");
             alert.showAndWait();
         }
     }
@@ -309,6 +345,15 @@ public class Main extends Application implements Initializable {
      * @throws IOException Exception occurs when trying to open the txt that has the dictionary inside
      */
     public void createDictAction() throws IOException {
+        dictID = createDictTf.getText();
+        createDictAux();
+    }
+
+    /**
+     * Auxiliary method for creation of a txt dictionary (called by createDictAction, createAction)
+     * @throws IOException Exception occurs when trying to open the txt that has the dictionary inside
+     */
+    private void createDictAux() throws IOException {
         ConnectAPI connectAPI = new ConnectAPI(dictID);
 
         // Connect to the API and get the response
@@ -332,6 +377,14 @@ public class Main extends Application implements Initializable {
             } catch (IOException e) {
                 throwAlert("IOException", e.getMessage());
             }
+
+            createDictTf.setText("");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText(null);
+            alert.setGraphic(null);
+            alert.setContentText("Dictionary created successfully.\nYou can load the dictionary immediately.");
+            alert.showAndWait();
         }
         else {
             createDictTf.setText("");
@@ -342,7 +395,6 @@ public class Main extends Application implements Initializable {
             alert.setContentText("This LibraryID does not exist.\nThe GET Request failed.\nTry an other LibraryID.");
             alert.showAndWait();
         }
-
     }
 
     /**
@@ -442,7 +494,7 @@ public class Main extends Application implements Initializable {
 
     /**
      * Event handler that is triggered when clicking a probability button
-     * This click is basically how the user interracts with the game
+     * This click is basically how the user interacts with the game
      * @param e The event object
      */
     private void inputSelected(MouseEvent e) {
@@ -488,13 +540,17 @@ public class Main extends Application implements Initializable {
      */
     private void setFocusOnLetter(int position, boolean foundLetter) {
         if (foundLetter && (position + 1) <= game.roundInfo.hiddenWord.size()) {
-            wordContainer.getChildren().get(position + 1).fireEvent(new MouseEvent(MouseEvent.MOUSE_CLICKED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, true, true, true, true, true, true, true, true, true, true, null));
-            wordContainer.getChildren().get(position + 1).requestFocus();
-            if ((position + 1) == game.roundInfo.hiddenWord.size()) {
-                setMessagePosLbl("");
+            if ((position + 1) < game.roundInfo.hiddenWord.size() && this.game.roundInfo.playerGuess[position + 1] != '?') {
+                setFocusOnLetter(position + 1, true);
             }
-            else setMessagePosLbl("Choosing Letter for position " + (position + 2) + ".");
-
+            else {
+                wordContainer.getChildren().get(position + 1).fireEvent(new MouseEvent(MouseEvent.MOUSE_CLICKED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, true, true, true, true, true, true, true, true, true, true, null));
+                wordContainer.getChildren().get(position + 1).requestFocus();
+                if ((position + 1) == game.roundInfo.hiddenWord.size()) {
+                    setMessagePosLbl("");
+                }
+                else setMessagePosLbl("Choosing Letter for position " + (position + 2) + ".");
+            }
         }
         else {
             wordContainer.getChildren().get(position).fireEvent(new MouseEvent(MouseEvent.MOUSE_CLICKED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, true, true, true, true, true, true, true, true, true, true, null));
