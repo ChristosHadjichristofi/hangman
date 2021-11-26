@@ -18,4 +18,6 @@ The project was to implement a variant of the Hangman game. The goal was to writ
 * [Java FX 11](https://openjfx.io/openjfx-docs/)
 
 ## GUI
-Images will be uploaded
+![hangman0](https://user-images.githubusercontent.com/40044042/143575830-35e33bff-2fcd-4440-8554-01da92c8d881.png)
+![hangman1](https://user-images.githubusercontent.com/40044042/143575906-af9e64a1-750e-415c-97c0-a5035d9cf5f2.png)
+![hangman2](https://user-images.githubusercontent.com/40044042/143575917-0ba4c50a-b7c3-4f6b-85c6-f0987f1ce4b9.png)
