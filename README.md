@@ -1,6 +1,14 @@
 # Hangman Game - Multimedia NTUA
 
-The project was to implement a variant of the Hangman game. The goal was to write this project with Java, using the OOP principles.
+<p align = "center"> The project was to implement a variant of the Hangman game. The goal was to write this project with Java, using the OOP principles. </p>
+
+<p align="center">
+	<img alt="Byte Code Size" src="https://img.shields.io/github/languages/code-size/ChristosHadjichristofi/hangman?color=yellowgreen" />
+	<img alt="# Lines of Code" src="https://img.shields.io/tokei/lines/github/ChristosHadjichristofi/hangman?color=yellowgreen" />
+	<img alt="# Languages Used" src="https://img.shields.io/github/languages/count/ChristosHadjichristofi/hangman?color=yellow" />
+	<img alt="Top language" src="https://img.shields.io/github/languages/top/ChristosHadjichristofi/hangman?color=yellow" />
+	<img alt="Last commit" src="https://img.shields.io/github/last-commit/ChristosHadjichristofi/hangman?color=important" />
+</p>
 
 ## Details
 * The user can create new Dictionaries by just giving as input a dictionary ID, which will be used to make an api call to ```https://openlibrary.org/works/{OPEN-LIBRARY-ID}.json```. Of course the dictionary ID is the OPEN-LIBRARY-ID. This dictionary ID has to be valid (the url must exist) or else the game won't continue. The response then is retrieved, and if the status of the request was ok (less than 299) it will be saved. After this response was saved, it will be processed. From the response we care about the value attribute. This value attribute is basically a description of a book and we only want to keep words with size greater than or equal to 6. All special chars and numbers are eliminated. Also the 20% of the words in the dictionary must have length >= 9, duplicates can not exist and the total dictionary length has to be >= 20. In any other case the dictionary is invalid.
