@@ -45,6 +45,7 @@ public class Player {
         }
         else {
             if (this.points - 15 >= 0) this.points -= 15;
+            else this.points = 0;
         }
     }
 
